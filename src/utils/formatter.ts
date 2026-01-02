@@ -10,6 +10,7 @@ const MIN_CHARACTERS_PER_LINE = 16;
  *
  * @throws {Error} If maxWidth < {@link MIN_CHARACTERS_PER_LINE}
  * @throws {Error} If any word is empty or longer than maxWidth
+ * @throws {Error} If width does not equal the total length of all words in the line array
  *
  * @example
  * justifyLine(['This', 'is', 'an'], 8, 16)
@@ -25,6 +26,7 @@ const justifyLine = (line: string[], width: number, maxWidth: number) => {
       `Invalid minWidth: expected at least ${MIN_CHARACTERS_PER_LINE}.`
     );
   }
+  let computedWidth = 0;
   const totalSpaces = maxWidth - width;
   const spacesBetweenWords = Math.floor(totalSpaces / (line.length - 1));
   const nbOfWordsWithMoreSpaces = totalSpaces % (line.length - 1);
@@ -35,6 +37,7 @@ const justifyLine = (line: string[], width: number, maxWidth: number) => {
       throw new Error(
         `Invalid word length: expected between 1 and ${maxWidth} characters, but received ${word.length}.`
       );
+    computedWidth += word.length;
     justifiedLine =
       justifiedLine +
       word +
@@ -42,6 +45,9 @@ const justifyLine = (line: string[], width: number, maxWidth: number) => {
         ? ""
         : " ".repeat(spacesBetweenWords) +
           (i + 1 <= nbOfWordsWithMoreSpaces ? " " : ""));
+  }
+  if (computedWidth !== width) {
+    throw new Error(`Invalid width: expected ${computedWidth}.`);
   }
   return justifiedLine;
 };
@@ -56,6 +62,7 @@ const justifyLine = (line: string[], width: number, maxWidth: number) => {
  *
  * @throws {Error} If maxWidth < {@link MIN_CHARACTERS_PER_LINE}
  * @throws {Error} If any word is empty or longer than maxWidth
+ * @throws {Error} If width does not equal the total length of all words in the line array
  *
  * @example
  * leftJustifyLine(['This', 'is'], 6, 16)
@@ -67,6 +74,7 @@ const leftJustifyLine = (line: string[], width: number, maxWidth: number) => {
       `Invalid minWidth: expected at least ${MIN_CHARACTERS_PER_LINE}.`
     );
   }
+  let computedWidth = 0;
   const totalSpaces = maxWidth - width;
   const extraSpaces = totalSpaces - (line.length - 1);
   let justifiedLine: string = "";
@@ -76,10 +84,14 @@ const leftJustifyLine = (line: string[], width: number, maxWidth: number) => {
       throw new Error(
         `Invalid word length: expected between 1 and ${maxWidth} characters, but received ${word.length}.`
       );
+    computedWidth += word.length;
     justifiedLine =
       justifiedLine +
       word +
       (i === line.length - 1 ? " ".repeat(extraSpaces) : " ");
+  }
+  if (computedWidth !== width) {
+    throw new Error(`Invalid width: expected ${computedWidth}.`);
   }
   return justifiedLine;
 };
@@ -143,4 +155,4 @@ function fullJustify(words: string[], maxWidth: number): string[] {
   return justifiedLines;
 }
 
-export { justifyLine, fullJustify, leftJustifyLine };
+export { justifyLine, fullJustify, leftJustifyLine, MIN_CHARACTERS_PER_LINE };
