@@ -3,7 +3,7 @@ import {
   justifyLine,
   leftJustifyLine,
   MIN_CHARACTERS_PER_LINE,
-} from "../../src/utils/formatter.js";
+} from "../../src/utils/text-formatter.js";
 import { describe, expect, it } from "@jest/globals";
 
 describe("justifyLine", () => {
