@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { UserInfo, type IUserInfo } from "../models/IUserInfo.js";
+import { UserInfo, type IUserInfo } from "../models/user-info-models.js";
 
 const fetchToken = async (email: string) => {
   let dbUserInfo = await UserInfo.findOne({ email });
@@ -12,6 +12,7 @@ const fetchToken = async (email: string) => {
       email,
       token,
       words: 0,
+      wordsUpdatedAt: new Date(),
     });
     const addedUserInfo = await newUserInfo.save();
     return addedUserInfo.token;

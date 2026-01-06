@@ -49,7 +49,7 @@ const justifyLine = (line: string[], width: number, maxWidth: number) => {
   if (computedWidth !== width) {
     throw new Error(`Invalid width: expected ${computedWidth}.`);
   }
-  return justifiedLine;
+  return justifiedLine + "\n";
 };
 
 /**
@@ -93,7 +93,7 @@ const leftJustifyLine = (line: string[], width: number, maxWidth: number) => {
   if (computedWidth !== width) {
     throw new Error(`Invalid width: expected ${computedWidth}.`);
   }
-  return justifiedLine;
+  return justifiedLine + "\n";
 };
 
 /**

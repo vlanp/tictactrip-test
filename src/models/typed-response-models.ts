@@ -18,6 +18,10 @@ interface IInternalServerErrorResponse extends IResBody {
   message: "Internal server error";
 }
 
+interface IUnauthorizedResponse extends IResBody {
+  success: false;
+}
+
 interface IOkResponse<K> extends IResBody<K> {
   success: true;
   data: K;
@@ -31,6 +35,10 @@ interface INotFoundResponse extends IResBody {
   success: false;
 }
 
+interface IPaymentRequiredResponse extends IResBody {
+  success: false;
+}
+
 export type {
   ITypedResponse,
   IResBody,
@@ -38,4 +46,6 @@ export type {
   IOkResponse,
   IBadRequestResponse,
   INotFoundResponse,
+  IUnauthorizedResponse,
+  IPaymentRequiredResponse,
 };

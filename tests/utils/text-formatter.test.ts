@@ -14,27 +14,27 @@ describe("justifyLine", () => {
         8,
         MIN_CHARACTERS_PER_LINE
       );
-      expect(result).toBe("This    is    an");
+      expect(result).toBe("This    is    an\n");
     });
 
     it("should justify a line with even space distribution", () => {
       const result = justifyLine(["This", "is"], 6, MIN_CHARACTERS_PER_LINE);
-      expect(result).toBe("This          is");
+      expect(result).toBe("This          is\n");
     });
 
     it("should justify a line without extra spaces", () => {
       const result = justifyLine(["Hello", "my", "beloved", "world"], 19, 22);
-      expect(result).toBe("Hello my beloved world");
+      expect(result).toBe("Hello my beloved world\n");
     });
 
     it("should justify a line with uneven space distribution", () => {
       const result = justifyLine(["The", "quick", "brown"], 13, 20);
-      expect(result).toBe("The    quick   brown");
+      expect(result).toBe("The    quick   brown\n");
     });
 
     it("with no words should return an empty line", () => {
       const result = justifyLine([], 0, 20);
-      expect(result).toBe("");
+      expect(result).toBe("\n");
     });
 
     it("with a single word at maximum allowed length should return the word", () => {
@@ -44,7 +44,7 @@ describe("justifyLine", () => {
         MIN_CHARACTERS_PER_LINE,
         MIN_CHARACTERS_PER_LINE
       );
-      expect(result).toBe(word);
+      expect(result).toBe(word + "\n");
     });
   });
 
@@ -107,7 +107,7 @@ describe("leftJustifyLine", () => {
         8,
         MIN_CHARACTERS_PER_LINE
       );
-      expect(result).toBe("This is an      ");
+      expect(result).toBe("This is an      \n");
     });
 
     it("should left justify a line", () => {
@@ -116,7 +116,7 @@ describe("leftJustifyLine", () => {
         6,
         MIN_CHARACTERS_PER_LINE
       );
-      expect(result).toBe("This is         ");
+      expect(result).toBe("This is         \n");
     });
 
     it("should left justify a line without extra spaces", () => {
@@ -125,12 +125,12 @@ describe("leftJustifyLine", () => {
         19,
         22
       );
-      expect(result).toBe("Hello my beloved world");
+      expect(result).toBe("Hello my beloved world\n");
     });
 
     it("with no words should return an empty line", () => {
       const result = leftJustifyLine([], 0, 20);
-      expect(result).toBe("");
+      expect(result).toBe("\n");
     });
 
     it("with a single word at maximum allowed length should return the word", () => {
@@ -140,7 +140,7 @@ describe("leftJustifyLine", () => {
         MIN_CHARACTERS_PER_LINE,
         MIN_CHARACTERS_PER_LINE
       );
-      expect(result).toBe(word);
+      expect(result).toBe(word + "\n");
     });
   });
 
@@ -205,9 +205,9 @@ describe("fullJustify", () => {
         MIN_CHARACTERS_PER_LINE
       );
       expect(result).toStrictEqual([
-        "This    is    an",
-        "example  of text",
-        "justification.  ",
+        "This    is    an\n",
+        "example  of text\n",
+        "justification.  \n",
       ]);
     });
 
@@ -217,9 +217,9 @@ describe("fullJustify", () => {
         MIN_CHARACTERS_PER_LINE
       );
       expect(result).toStrictEqual([
-        "What   must   be",
-        "acknowledgment  ",
-        "shall be        ",
+        "What   must   be\n",
+        "acknowledgment  \n",
+        "shall be        \n",
       ]);
     });
 
@@ -248,24 +248,24 @@ describe("fullJustify", () => {
         20
       );
       expect(result).toStrictEqual([
-        "Science  is  what we",
-        "understand      well",
-        "enough to explain to",
-        "a  computer.  Art is",
-        "everything  else  we",
-        "do                  ",
+        "Science  is  what we\n",
+        "understand      well\n",
+        "enough to explain to\n",
+        "a  computer.  Art is\n",
+        "everything  else  we\n",
+        "do                  \n",
       ]);
     });
 
     it("with no words should return an array containing an unique empty string", () => {
       const result = fullJustify([], 20);
-      expect(result).toStrictEqual([""]);
+      expect(result).toStrictEqual(["\n"]);
     });
 
     it("with a single word at maximum allowed length should return an array with only this word", () => {
       const word = "a".repeat(MIN_CHARACTERS_PER_LINE);
       const result = fullJustify([word], MIN_CHARACTERS_PER_LINE);
-      expect(result).toStrictEqual([word]);
+      expect(result).toStrictEqual([word + "\n"]);
     });
   });
 

@@ -4,16 +4,18 @@ import type {
   IInternalServerErrorResponse,
   INotFoundResponse,
   ITypedResponse,
-} from "./models/ITypedResponse.js";
+} from "./models/typed-response-models.js";
 import checkedEnv from "./utils/check-env.js";
 import { connectDB } from "./config/db.js";
-import apiRouter from "./routes/api.js";
+import apiRouter from "./routes/api-routes.js";
 
 connectDB();
 
 const app = express();
 
 app.use(express.json());
+
+app.use(express.text());
 
 app.use("/api", apiRouter);
 
