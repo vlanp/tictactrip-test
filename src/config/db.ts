@@ -3,7 +3,9 @@ import checkedEnv from "../utils/check-env.js";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(checkedEnv.MONGODB_URI);
+    await mongoose.connect(checkedEnv.MONGODB_URI, {
+      dbName: checkedEnv.DB_NAME,
+    });
     console.log("MongoDB Connected");
   } catch (err) {
     console.error(err);

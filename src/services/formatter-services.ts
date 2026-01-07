@@ -13,10 +13,10 @@ const getFormattingAllowed = async (
 ) => {
   const today = new Date();
   if (datesInSameDay(dbUserInfo.wordsUpdatedAt, today)) {
-    return words.length < MAX_NUMBER_OF_WORDS_PER_DAY - dbUserInfo.words
+    return words.length <= MAX_NUMBER_OF_WORDS_PER_DAY - dbUserInfo.words
       ? true
       : false;
-  } else return words.length < MAX_NUMBER_OF_WORDS_PER_DAY ? true : false;
+  } else return words.length <= MAX_NUMBER_OF_WORDS_PER_DAY ? true : false;
 };
 
 const generateJustifiedText = async (

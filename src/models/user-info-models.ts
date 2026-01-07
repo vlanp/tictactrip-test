@@ -5,7 +5,7 @@ const ZUserInfo = z.strictObject({
   email: z.email(),
   token: z.uuidv4(),
   words: z.int().positive(),
-  wordsUpdatedAt: z.instanceof(Date),
+  wordsUpdatedAt: z.date(),
 });
 
 type IUserInfo = z.infer<typeof ZUserInfo>;
@@ -13,7 +13,7 @@ type IUserInfo = z.infer<typeof ZUserInfo>;
 const ZDbUserInfo = z.strictObject({
   ...ZUserInfo.shape,
   _id: z.instanceof(Types.ObjectId),
-  __v: z.number(),
+  __v: z.int().positive(),
 });
 
 type IDbUserInfo = z.infer<typeof ZDbUserInfo>;

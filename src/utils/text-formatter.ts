@@ -191,9 +191,6 @@ function fullJustify(words: string[], maxWidth: number): string[] {
         `Invalid word length: expected between 1 and ${maxWidth} characters, but received ${word.length}.`
       );
     const extractResult = extractLineBreak(word);
-    if (i < 150) {
-      console.log(extractResult);
-    }
     if (extractResult.before) {
       justifiedLines.push(currentLine.join(" ") + extractResult.before);
       currentLine = [];
