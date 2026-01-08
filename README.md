@@ -15,6 +15,9 @@
 
   <p align="center">
     Back-end project developed as part of the Tictactrip application process
+    <br/>
+    <br/>
+    <a href="https://tictactrip-test.vlanp.com/">Access Deployed API</a>
   </p>
 </div>
 
@@ -57,7 +60,7 @@ As part of the Tictactrip application process, candidates are required to implem
    ```
 3. Run the TypeScript compiler
    ```sh
-   npx tsc
+   pnpm tsc
    ```
 4. Create a `.env` file at the project root
 
