@@ -1,10 +1,31 @@
-import { describe, expect, it } from "@jest/globals";
-import { getFormattingAllowed } from "../../src/services/formatter-services.js";
-import { MAX_NUMBER_OF_WORDS_PER_DAY } from "../../src/config/config.js";
-import { ZDbUserInfo } from "../../src/models/user-info-models.js";
-import mongoose from "mongoose";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from "@jest/globals";
+import {
+  generateJustifiedText,
+  getFormattingAllowed,
+} from "../../src/services/formatter-services.js";
+import {
+  LINE_LENGTH,
+  MAX_NUMBER_OF_WORDS_PER_DAY,
+} from "../../src/config/config.js";
+import {
+  UserInfo,
+  ZDbUserInfo,
+  ZUserInfo,
+  type IDbUserInfoDocument,
+  type IUserInfo,
+} from "../../src/models/user-info-models.js";
+import mongoose, { Mongoose } from "mongoose";
 import { faker } from "@faker-js/faker";
 import { zocker } from "zocker";
+import checkedEnv from "../../src/utils/check-env.js";
+import { fullJustify } from "../../src/utils/text-formatter.js";
 
 describe("getFormattingAllowed", () => {
   const dbUserInfoZock0 = zocker(ZDbUserInfo)
@@ -118,23 +139,99 @@ describe("getFormattingAllowed", () => {
   });
 });
 
-// describe("generateJustifiedText", () => {
-//   let connection: Mongoose;
+describe("generateJustifiedText", () => {
+  let connection: Mongoose;
 
-//   beforeAll(async () => {
-//     connection = await mongoose.connect(checkedEnv.MONGODB_URI, {
-//       dbName: checkedEnv.DB_NAME,
-//     });
-//   });
+  beforeAll(async () => {
+    connection = await mongoose.connect(checkedEnv.MONGODB_URI, {
+      dbName: checkedEnv.TEST_DB_NAME,
+    });
+    await UserInfo.deleteMany({});
+  });
 
-//   afterAll(async () => {
-//     await connection.disconnect();
-//   });
+  beforeEach(async () => {
+    await UserInfo.deleteMany({});
+  });
 
-//   const userInfo = zocker(ZUserInfo)
-//     .setSeed(123)
-//     .supply(ZUserInfo.shape.words, 0)
-//     .supply(ZUserInfo.shape.wordsUpdatedAt, new Date())
-//     .generate();
-//   const newUserInfo = new UserInfo<IUserInfo>(userInfo);
-// });
+  afterAll(async () => {
+    await UserInfo.deleteMany({});
+    await connection.disconnect();
+  });
+
+  const userInfoZock = zocker(ZUserInfo)
+    .setSeed(123)
+    .supply(ZUserInfo.shape.words, 20);
+
+  it("should update dbUserInfo and return a valid IJustifiedText object", async () => {
+    const userInfo = userInfoZock
+      .supply(ZUserInfo.shape.wordsUpdatedAt, new Date())
+      .generate();
+    const newUserInfo: IDbUserInfoDocument = new UserInfo<IUserInfo>(userInfo);
+
+    const words = Array<string>(
+      faker.number.int({
+        min: 1,
+        max: MAX_NUMBER_OF_WORDS_PER_DAY,
+      })
+    ).fill("words");
+    const wordsLeft =
+      MAX_NUMBER_OF_WORDS_PER_DAY - (newUserInfo.words + words.length);
+    const beforeDate = new Date();
+    const result = await generateJustifiedText(words, newUserInfo);
+    const afterDate = new Date();
+    expect(result).toEqual({
+      justifiedText: fullJustify(words, LINE_LENGTH).join(""),
+      wordsUsed: words.length,
+      wordsLeft: wordsLeft,
+    });
+    const dbUserInfo = await UserInfo.findOne({
+      email: newUserInfo.email,
+    }).lean();
+    expect(dbUserInfo?.email).toBe(newUserInfo.email);
+    expect(dbUserInfo?.token).toBe(newUserInfo.token);
+    expect(dbUserInfo?.words).toBe(MAX_NUMBER_OF_WORDS_PER_DAY - wordsLeft);
+    expect(dbUserInfo?.wordsUpdatedAt.getTime()).toBeGreaterThanOrEqual(
+      beforeDate.getTime()
+    );
+    expect(dbUserInfo?.wordsUpdatedAt.getTime()).toBeLessThanOrEqual(
+      afterDate.getTime()
+    );
+  });
+
+  it("should update dbUserInfo and return a valid IJustifiedText object", async () => {
+    const d = new Date();
+    d.setDate(d.getDate() - 5);
+    const userInfo = userInfoZock
+      .supply(ZUserInfo.shape.wordsUpdatedAt, d)
+      .generate();
+    const newUserInfo: IDbUserInfoDocument = new UserInfo<IUserInfo>(userInfo);
+
+    const words = Array<string>(
+      faker.number.int({
+        min: 1,
+        max: MAX_NUMBER_OF_WORDS_PER_DAY,
+      })
+    ).fill("words");
+    const wordsLeft = MAX_NUMBER_OF_WORDS_PER_DAY - words.length;
+    const beforeDate = new Date();
+    const result = await generateJustifiedText(words, newUserInfo);
+    const afterDate = new Date();
+    expect(result).toEqual({
+      justifiedText: fullJustify(words, LINE_LENGTH).join(""),
+      wordsUsed: words.length,
+      wordsLeft: wordsLeft,
+    });
+    const dbUserInfo = await UserInfo.findOne({
+      email: newUserInfo.email,
+    }).lean();
+    expect(dbUserInfo?.email).toBe(newUserInfo.email);
+    expect(dbUserInfo?.token).toBe(newUserInfo.token);
+    expect(dbUserInfo?.words).toBe(MAX_NUMBER_OF_WORDS_PER_DAY - wordsLeft);
+    expect(dbUserInfo?.wordsUpdatedAt.getTime()).toBeGreaterThanOrEqual(
+      beforeDate.getTime()
+    );
+    expect(dbUserInfo?.wordsUpdatedAt.getTime()).toBeLessThanOrEqual(
+      afterDate.getTime()
+    );
+  });
+});
