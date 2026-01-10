@@ -5,7 +5,6 @@ import type {
   INotFoundResponse,
   ITypedResponse,
 } from "./models/typed-response-models.js";
-import checkedEnv from "./utils/check-env.js";
 import { connectDB } from "./config/db.js";
 import apiRouter from "./routes/api-routes.js";
 
@@ -44,6 +43,4 @@ function errorHandler(
 
 app.use(errorHandler);
 
-app.listen(checkedEnv.PORT, () => {
-  console.log(`Server is running on port ${checkedEnv.PORT}`);
-});
+export { app, errorHandler };
