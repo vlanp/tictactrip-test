@@ -1,16 +1,10 @@
-import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
+import { describe, expect, it } from "@jest/globals";
 import { getFormattingAllowed } from "../../src/services/formatter-services.js";
 import { MAX_NUMBER_OF_WORDS_PER_DAY } from "../../src/config/config.js";
-import {
-  UserInfo,
-  ZDbUserInfo,
-  ZUserInfo,
-  type IUserInfo,
-} from "../../src/models/user-info-models.js";
-import { zocker } from "zocker";
-import mongoose, { Mongoose } from "mongoose";
+import { ZDbUserInfo } from "../../src/models/user-info-models.js";
+import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";
-import checkedEnv from "../../src/utils/check-env.js";
+import { zocker } from "zocker";
 
 describe("getFormattingAllowed", () => {
   const dbUserInfoZock0 = zocker(ZDbUserInfo)

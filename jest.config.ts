@@ -1,17 +1,15 @@
 import type { Config } from "jest";
-import { TS_EXT_TO_TREAT_AS_ESM, ESM_TS_TRANSFORM_PATTERN } from "ts-jest";
 
 export default {
-  extensionsToTreatAsEsm: [...TS_EXT_TO_TREAT_AS_ESM],
+  extensionsToTreatAsEsm: [".ts", ".tsx"],
   transform: {
-    [ESM_TS_TRANSFORM_PATTERN]: [
-      "ts-jest",
+    "^.+\\.(t|j)sx?$": [
+      "@swc/jest",
       {
         //...other `ts-jest` options
-        useESM: true,
       },
     ],
   },
   testMatch: ["**/tests/**/*.test.js"],
-  // preset: "@shelf/jest-mongodb",
+  preset: "@shelf/jest-mongodb",
 } satisfies Config;

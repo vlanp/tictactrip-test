@@ -1,0 +1,17 @@
+diff --git a/package.json b/package.json
+index c29c63e5c81eabdade596ca8fe3c73f7e206a081..7851280f4e50d6803c284d2fd5041cb611d4f273 100644
+--- a/package.json
++++ b/package.json
+@@ -38,5 +38,11 @@
+     "test": "vitest --run --passWithNoTests",
+     "check": "tsc --noEmit",
+     "format": "prettier --write ."
+-  }
++  },
++  "exports": {
++    ".": {
++    "import": "./dist/index.js",
++    "require": "./dist/index.cjs"
++    }
++}
+ }

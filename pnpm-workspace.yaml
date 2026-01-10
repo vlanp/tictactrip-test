@@ -1,0 +1,2 @@
+patchedDependencies:
+  zocker@3.0.0: patches/zocker@3.0.0.patch
