@@ -1,5 +1,6 @@
 import {
   afterAll,
+  afterEach,
   beforeAll,
   beforeEach,
   describe,
@@ -27,9 +28,11 @@ import { zocker } from "zocker";
 import checkedEnv from "../../src/utils/check-env.js";
 import { fullJustify } from "../../src/utils/text-formatter.js";
 
+const seed = 234;
+
 describe("getFormattingAllowed", () => {
   const dbUserInfoZock0 = zocker(ZDbUserInfo)
-    .setSeed(123)
+    .setSeed(seed)
     .supply(ZDbUserInfo.shape._id, new mongoose.Types.ObjectId());
 
   describe("given that the wordsUpdatedAt is today", () => {
@@ -140,26 +143,27 @@ describe("getFormattingAllowed", () => {
 });
 
 describe("generateJustifiedText", () => {
+  const documents: IDbUserInfoDocument[] = [];
   let connection: Mongoose;
 
   beforeAll(async () => {
     connection = await mongoose.connect(checkedEnv.MONGODB_URI, {
       dbName: checkedEnv.TEST_DB_NAME,
     });
-    await UserInfo.deleteMany({});
   });
 
-  beforeEach(async () => {
-    await UserInfo.deleteMany({});
+  afterEach(async () => {
+    for (const doc of documents) {
+      await doc.deleteOne();
+    }
   });
 
   afterAll(async () => {
-    await UserInfo.deleteMany({});
     await connection.disconnect();
   });
 
   const userInfoZock = zocker(ZUserInfo)
-    .setSeed(123)
+    .setSeed(seed)
     .supply(ZUserInfo.shape.words, 20);
 
   it("should update dbUserInfo and return a valid IJustifiedText object", async () => {
@@ -167,7 +171,7 @@ describe("generateJustifiedText", () => {
       .supply(ZUserInfo.shape.wordsUpdatedAt, new Date())
       .generate();
     const newUserInfo: IDbUserInfoDocument = new UserInfo<IUserInfo>(userInfo);
-
+    documents.push(newUserInfo);
     const words = Array<string>(
       faker.number.int({
         min: 1,
@@ -205,7 +209,7 @@ describe("generateJustifiedText", () => {
       .supply(ZUserInfo.shape.wordsUpdatedAt, d)
       .generate();
     const newUserInfo: IDbUserInfoDocument = new UserInfo<IUserInfo>(userInfo);
-
+    documents.push(newUserInfo);
     const words = Array<string>(
       faker.number.int({
         min: 1,

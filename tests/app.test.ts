@@ -7,7 +7,7 @@ import type {
 } from "../src/models/typed-response-models.js";
 import express from "express";
 
-describe("Test the /*all path", () => {
+describe("The /*all path", () => {
   test("should respond with a 404 status code and a ITypedResponse<INotFoundResponse>", async () => {
     const response = await request(app).get("/foo");
     expect(response.statusCode).toBe(404);
@@ -17,7 +17,7 @@ describe("Test the /*all path", () => {
   });
 });
 
-describe("Test the app errorHandler", () => {
+describe("The app errorHandler", () => {
   const app = express();
   app.use(express.json());
   app.use(express.text());

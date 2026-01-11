@@ -10,7 +10,7 @@ import { ZEmail } from "../models/email-models.js";
 import z from "zod/v4";
 import { fetchToken } from "../services/token-services.js";
 import type { IJustifiedText } from "../models/justified-text-models.js";
-import type { AuthenticatedRequest } from "../models/authenticated-request-models.js";
+import type { IAuthenticatedRequest } from "../models/authenticated-request-models.js";
 import {
   generateJustifiedText,
   getFormattingAllowed,
@@ -45,7 +45,7 @@ const getToken = async (
 };
 
 const getJustifiedText = async (
-  req: AuthenticatedRequest,
+  req: IAuthenticatedRequest,
   res:
     | ITypedResponse<IOkResponse<IJustifiedText>>
     | ITypedResponse<IBadRequestResponse>

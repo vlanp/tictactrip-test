@@ -2,7 +2,6 @@ import {
   afterAll,
   afterEach,
   beforeAll,
-  beforeEach,
   describe,
   expect,
   it,
@@ -11,29 +10,33 @@ import {
 import type { Mongoose } from "mongoose";
 import mongoose from "mongoose";
 import checkedEnv from "../../src/utils/check-env.js";
-import { UserInfo, ZUserInfo } from "../../src/models/user-info-models.js";
+import {
+  UserInfo,
+  ZUserInfo,
+  type IDbUserInfoDocument,
+} from "../../src/models/user-info-models.js";
 import { zocker } from "zocker";
 
+const seed = 123;
+
 describe("fetchToken", () => {
+  const documents: IDbUserInfoDocument[] = [];
   let connection: Mongoose;
 
   beforeAll(async () => {
     connection = await mongoose.connect(checkedEnv.MONGODB_URI, {
       dbName: checkedEnv.TEST_DB_NAME,
     });
-    await UserInfo.deleteMany({});
-  });
-
-  beforeEach(async () => {
-    await UserInfo.deleteMany({});
   });
 
   afterAll(async () => {
-    await UserInfo.deleteMany({});
     await connection.disconnect();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    for (const doc of documents) {
+      await doc.deleteOne();
+    }
     jest.unstable_unmockModule("uuid");
   });
 
@@ -49,23 +52,27 @@ describe("fetchToken", () => {
     }));
     const { fetchToken } = await import("../../src/services/token-services.js");
     const otherUserInfo = zocker(ZUserInfo)
-      .setSeed(123)
+      .setSeed(seed)
       .supply(ZUserInfo.shape.email, "otherUserEmail")
       .supply(ZUserInfo.shape.token, otherUserToken)
       .generate();
-    await new UserInfo(otherUserInfo).save();
+    const newOtherUserInfo = new UserInfo(otherUserInfo);
+    await newOtherUserInfo.save();
+    documents.push(newOtherUserInfo);
     const email = "userEmail";
     const result = await fetchToken(email);
-    const dbUserInfo = await UserInfo.findOne({ email }).lean();
+    const dbUserInfo = await UserInfo.findOne({ email });
+    dbUserInfo && documents.push(dbUserInfo);
     expect(result).toBe(dbUserInfo?.token);
     expect(result).toBe(userToken);
     expect(mockedFunction).toHaveBeenCalledTimes(2);
   });
 
   it("should return the token of an existing user", async () => {
-    const userInfo = zocker(ZUserInfo).setSeed(123).generate();
+    const userInfo = zocker(ZUserInfo).setSeed(seed).generate();
     const newUserInfo = new UserInfo(userInfo);
     await newUserInfo.save();
+    documents.push(newUserInfo);
     const { fetchToken } = await import("../../src/services/token-services.js");
     const result = await fetchToken(newUserInfo.email);
     expect(result).toBe(newUserInfo.token);

@@ -4,7 +4,7 @@ import type {
   IUnauthorizedResponse,
 } from "../models/typed-response-models.js";
 import { UserInfo } from "../models/user-info-models.js";
-import type { AuthenticatedRequest } from "../models/authenticated-request-models.js";
+import type { IAuthenticatedRequest } from "../models/authenticated-request-models.js";
 
 /**
  * Return next() if the parameter req contains a Bearer token in req.headers.authorization and this token correspond to a user in the database.
@@ -18,7 +18,7 @@ import type { AuthenticatedRequest } from "../models/authenticated-request-model
  * @return next() if there is a valid Bearer token in the req parameter and undefined if not.
  */
 const isAuthenticated = async (
-  req: AuthenticatedRequest,
+  req: IAuthenticatedRequest,
   res: ITypedResponse<IUnauthorizedResponse>,
   next: NextFunction
 ) => {
