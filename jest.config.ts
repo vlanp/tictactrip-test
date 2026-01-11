@@ -7,6 +7,13 @@ export default {
       "@swc/jest",
       {
         //...other `ts-jest` options
+        jsc: {
+          parser: {
+            syntax: "typescript",
+            explicitResourceManagement: true,
+          },
+          target: "es2022",
+        },
       },
     ],
   },
