@@ -9,6 +9,7 @@ pipeline {
         }
         stage('test') {
             steps {
+                sh 'docker-compose up'
                 sh 'pnpm test'
             }
         }
