@@ -1,6 +1,6 @@
 /* Requires the Docker Pipeline plugin */
 pipeline {
-    agent { docker { image 'node:24.13.0-alpine3.23' } }
+    agent { dockerfile true }
     stages {
         stage('build') {
             steps {
