@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
+    "build": "pnpm install && pnpm tsc",
+    "start": "node dist/src/server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "clean": "rm -rf dist"
   },
   "keywords": [],
   "author": "",

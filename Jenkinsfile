@@ -4,7 +4,17 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'echo "Hello World"'
+                sh 'pnpm build'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'pnpm test'
+            }
+        }
+        stage('Deliver') {
+            steps {
+                sh 'pnpm start'
             }
         }
     }
